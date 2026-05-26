@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pixel Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Menu bar -->
+  <div class="menubar">
+    <button class="menubtn" data-menu="file">ファイル</button>
+    <button class="menubtn" data-menu="edit">編集</button>
+    <button class="menubtn" data-menu="view">表示</button>
+    <button class="menubtn" data-menu="canvas">キャンバス</button>
+    <div class="menubar-spacer"></div>
+    <span class="app-title">Pixel Editor</span>
+  </div>
+
+  <!-- Tool options bar (context-sensitive) -->
+  <div class="options-bar">
+    <div class="opt-group" id="opt-brush">
+      <span class="opt-label">ブラシ</span>
+      <button class="opt-btn" data-brush="1">1</button>
+      <button class="opt-btn" data-brush="2">2</button>
+      <button class="opt-btn" data-brush="3">3</button>
+      <button class="opt-btn" data-brush="4">4</button>
+      <button class="opt-btn" data-brush="6">6</button>
+      <button class="opt-btn" data-brush="8">8</button>
+    </div>
+    <div class="opt-sep"></div>
+    <div class="opt-group" id="opt-modes">
+      <button class="opt-btn" id="btn-pp" title="ピクセルパーフェクト">PP</button>
+      <button class="opt-btn" id="btn-mirror-x" title="水平ミラー (H)">
+        <svg viewBox="0 0 16 16"><path d="M8 2v12M3 5l-2 3 2 3M13 5l2 3-2 3" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="opt-btn" id="btn-mirror-y" title="垂直ミラー (V)">
+        <svg viewBox="0 0 16 16"><path d="M2 8h12M5 3l3-2 3 2M5 13l3 2 3-2" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="opt-btn" id="btn-grid" title="グリッド (Ctrl+G)">
+        <svg viewBox="0 0 16 16"><path d="M2 2h12v12H2zM2 6h12M2 10h12M6 2v12M10 2v12" stroke="currentColor" fill="none" stroke-width="1.2"/></svg>
+      </button>
+    </div>
+    <div class="opt-sep"></div>
+    <div class="opt-group">
+      <button class="opt-btn" id="btn-undo" title="戻る (Ctrl+Z)">
+        <svg viewBox="0 0 16 16"><path d="M7 4L3 8l4 4M3 8h7a3 3 0 010 6" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="opt-btn" id="btn-redo" title="進む (Ctrl+Y)">
+        <svg viewBox="0 0 16 16"><path d="M9 4l4 4-4 4M13 8H6a3 3 0 000 6" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="opt-sep"></div>
+    <div class="opt-group">
+      <span class="opt-label">サイズ</span>
+      <input id="inp-w" class="num-input" type="number" min="1" max="128" value="32" />
+      <span class="opt-x">×</span>
+      <input id="inp-h" class="num-input" type="number" min="1" max="128" value="32" />
+      <button id="btn-new" class="opt-text-btn">新規</button>
+    </div>
+  </div>
+
+  <!-- Main area: 3 columns -->
+  <div class="main">
+    <!-- Left: Tools -->
+    <aside class="tools-panel" id="tools-panel"></aside>
+
+    <!-- Center: Canvas -->
+    <section class="canvas-area" id="canvas-area">
+      <div class="canvas-host" id="canvas-host">
+        <canvas id="canvas"></canvas>
+        <canvas id="overlay"></canvas>
+      </div>
+    </section>
+
+    <!-- Right: Color + Palette + Layers -->
+    <aside class="right-panel">
+      <div class="panel-section">
+        <div class="panel-title">カラー</div>
+        <div class="color-pair">
+          <div class="color-swatch primary" id="color-primary"></div>
+          <div class="color-swatch secondary" id="color-secondary"></div>
+          <button class="swap-btn" id="btn-swap" title="色交換 (X)">⇄</button>
+        </div>
+        <div class="sv-pad" id="sv-pad">
+          <div class="sv-cursor" id="sv-cursor"></div>
+        </div>
+        <div class="hue-slider" id="hue-slider">
+          <div class="hue-thumb" id="hue-thumb"></div>
+        </div>
+        <div class="rgb-row">
+          <label>R<input id="rgb-r" type="number" min="0" max="255" /></label>
+          <label>G<input id="rgb-g" type="number" min="0" max="255" /></label>
+          <label>B<input id="rgb-b" type="number" min="0" max="255" /></label>
+        </div>
+        <div class="hex-row">
+          <span>HEX</span>
+          <input id="hex-input" type="text" maxlength="7" value="#000000" />
+        </div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-title">パレット</div>
+        <div class="palette-grid" id="palette"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Status bar -->
+  <footer class="statusbar">
+    <span class="stat-item" id="stat-pos">x: -, y: -</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-item" id="stat-color">
+      <span class="stat-color-chip" id="stat-color-chip"></span>
+      <span id="stat-color-hex">-</span>
+    </span>
+    <span class="stat-sep">|</span>
+    <span class="stat-item" id="stat-tool">ツール: ペン</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-item" id="stat-size">32 × 32</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-item" id="stat-zoom">100%</span>
+    <span class="stat-spacer"></span>
+    <span class="stat-mode" id="mode-indicator">●</span>
+  </footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

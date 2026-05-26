@@ -1,0 +1,47 @@
+{
+  "name": "pixel-editor",
+  "version": "0.1.0",
+  "description": "Pixel art editor with MCP server",
+  "author": "mocky700",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "mkdir -p dist/renderer && cp src/renderer/index.html src/renderer/styles.css dist/renderer/",
+    "start": "npm run build && electron .",
+    "mcp": "node dist/main/mcp-server.js",
+    "dev": "tsc -w",
+    "dist": "npm run build && electron-builder --mac --dir"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@types/ws": "^8.18.1",
+    "pngjs": "^7.0.0",
+    "ws": "^8.21.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pngjs": "^6.0.5",
+    "electron": "^33.0.0",
+    "electron-builder": "^26.8.1",
+    "typescript": "^5.5.0"
+  },
+  "build": {
+    "appId": "com.mocky.pixel-editor",
+    "productName": "Pixel Editor",
+    "asar": false,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.graphics-design",
+      "target": "dir",
+      "identity": null
+    }
+  }
+}
